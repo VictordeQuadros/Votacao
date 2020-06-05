@@ -1,7 +1,6 @@
 package br.com.compasso.votacao.controllers.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,20 +10,18 @@ import br.com.compasso.votacao.business.CalculadoraDeResultadosDaSessao;
 import br.com.compasso.votacao.converter.dto.PautaParaPautaDto;
 import br.com.compasso.votacao.model.EstadoDeSessao;
 import br.com.compasso.votacao.model.Sessao;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Getter
-@EqualsAndHashCode
 @Component
 public class ResultadoDaVotacaoDto {
 
 	private Long id = null;
 	private LocalDateTime dataDeInicio = null;
 	private LocalDateTime dataDeTermino = null;
-	private List<VotoDto> listaDeVotos = null;
+	private Set<VotoDto> listaDeVotos = null;
 	private EstadoDeSessao estado = null;
 	private PautaDto pauta = null;
 	private List<String> resultados = null;
@@ -36,7 +33,7 @@ public class ResultadoDaVotacaoDto {
 		this.id = sessao.getId();
 		this.dataDeInicio = sessao.getDataDeInicio();
 		this.dataDeTermino = sessao.getDataDeTermino();
-		this.listaDeVotos = new ArrayList<>();
+		this.listaDeVotos = new HashSet<VotoDto>();
 		this.listaDeVotos.addAll(sessao.getListaDeVotos().stream().map(VotoDto::new).collect(Collectors.toList()));
 		this.setResultados();
 		this.estado = sessao.getEstado();
@@ -47,7 +44,7 @@ public class ResultadoDaVotacaoDto {
 		this.id = sessao.getId();
 		this.dataDeInicio = sessao.getDataDeInicio();
 		this.dataDeTermino = sessao.getDataDeTermino();
-		this.listaDeVotos = new ArrayList<>();
+		this.listaDeVotos = new HashSet<VotoDto>();
 		this.listaDeVotos.addAll(sessao.getListaDeVotos().stream().map(VotoDto::new).collect(Collectors.toList()));
 		this.setResultados();
 		this.estado = sessao.getEstado();
