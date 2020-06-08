@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import br.com.compasso.votacao.controllers.dto.PautaDto;
 import br.com.compasso.votacao.model.Pauta;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PautaParaPautaDto implements ConversorDeEntidadeParaDto<Pauta, PautaDto> {
 
 	@Override

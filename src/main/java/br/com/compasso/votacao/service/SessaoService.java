@@ -48,7 +48,7 @@ public class SessaoService {
 
         Optional<Sessao> optional = sessaoRepository.findById(id);
         Sessao sessao = optional.get();
-        Set<Voto> votos = sessao.getListaDeVotos();
+        List<Voto> votos = sessao.getListaDeVotos();
         procuraPorCpfSeAPessoaJaVotou(form, votos);
         verificaSeASessaoEstaAbertaEVota(form, sessao, id);
         SessaoDto sessaoDto = sessaoParaSessaoDto.converter(sessao);
@@ -68,7 +68,7 @@ public class SessaoService {
         }
     }
 
-    private void procuraPorCpfSeAPessoaJaVotou(VotaNaSessaoForm form, Set<Voto> votos) throws AssociadoJaVotouException {
+    private void procuraPorCpfSeAPessoaJaVotou(VotaNaSessaoForm form, List<Voto> votos) throws AssociadoJaVotouException {
 
         if (votos
                 .stream()
@@ -84,7 +84,7 @@ public class SessaoService {
         sessao.addVotos(voto);
     }
 
-    //testado
+
     public Sessao findById(Long id) {
 
         return sessaoRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
@@ -98,19 +98,23 @@ public class SessaoService {
         }
     }
 
-    // testado
-    public Sessao salvaPeloForm(SessaoForm form) throws TempoInvalidoException, PautaInexistenteException {
+
+    public SessaoDto salvaPeloForm(SessaoForm form) throws TempoInvalidoException, PautaInexistenteException {
 
         Sessao sessao = sessaoFormParaSessao.converter(form, pautaRepository);
         sessaoRepository.save(sessao);
-        return sessao;
+        return sessaoParaSessaoDto.converter(sessao);
     }
 
-    // testado
+
     public List<SessaoDto> listaAsSessoes() {
         List<Sessao> sessoes = sessaoRepository.findAll();
         sessoes.parallelStream().forEach(this::fechaSessao);
         return sessaoParaSessaoDto.converterList(sessoes);
+    }
+
+    public ResultadoDaVotacaoDto resultados(Long id){
+        return new ResultadoDaVotacaoDto(this.findById(id));
     }
 
 }

@@ -3,16 +3,12 @@ package br.com.compasso.votacao.business;
 import br.com.compasso.votacao.controllers.dto.VotoDto;
 import br.com.compasso.votacao.model.OpcaoDeVoto;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class CalculadoraDeResultadosDaSessao {
 
-    public List<String> calcula(Set<VotoDto> listaDeVotos) {
+    public List<String> calcula(List<VotoDto> listaDeVotos) {
 
         double sim = 0;
         double nao = 0;

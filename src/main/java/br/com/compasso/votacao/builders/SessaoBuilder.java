@@ -1,7 +1,9 @@
 package br.com.compasso.votacao.builders;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import br.com.compasso.votacao.exception.TempoInvalidoException;
@@ -14,17 +16,23 @@ import br.com.compasso.votacao.model.Voto;
 
 public class SessaoBuilder {
 
-	LocalDateTime dataDeInicio;
-	LocalDateTime dataDeTermino;
-	Pauta pauta;
-	EstadoDeSessao estado;
-	Set<Voto> listaDeVotos;
+	private Long id;
+	private LocalDateTime dataDeInicio;
+	private LocalDateTime dataDeTermino;
+	private Pauta pauta;
+	private EstadoDeSessao estado;
+	private List<Voto> listaDeVotos;
 
 	public SessaoBuilder() {
 		this.dataDeInicio = LocalDateTime.now();
 		this.dataDeTermino = LocalDateTime.now().plusMinutes(1);
 		this.estado = EstadoDeSessao.ABERTA;
-		this.listaDeVotos = new HashSet<Voto>();
+		this.listaDeVotos = new ArrayList<>();
+	}
+
+	public SessaoBuilder id(Long id) {
+		this.id = id;
+		return this;
 	}
 
 	public SessaoBuilder terminoNaData(LocalDateTime data) {
@@ -37,6 +45,11 @@ public class SessaoBuilder {
 		return this;
 	}
 
+	public SessaoBuilder voto(Long id, OpcaoDeVoto voto, Associado associado) {
+		listaDeVotos.add(new Voto(id, voto, associado));
+		return this;
+	}
+	
 	public SessaoBuilder paraA(Pauta pauta) {
 		this.pauta = pauta;
 		return this;
@@ -48,15 +61,7 @@ public class SessaoBuilder {
 	}
 
 	public Sessao constroi() throws TempoInvalidoException {
-		Sessao sessao = new Sessao(dataDeTermino,dataDeInicio ,pauta);
-
-		for (Voto voto : listaDeVotos) {
-			sessao.addVotos(voto);
-		}
-
-		if (estado == EstadoDeSessao.FECHADA) {
-			sessao.setEstado(estado);
-		}
+		Sessao sessao = new Sessao(id, dataDeInicio, dataDeTermino, listaDeVotos, estado,pauta);
 
 		return sessao;
 	}

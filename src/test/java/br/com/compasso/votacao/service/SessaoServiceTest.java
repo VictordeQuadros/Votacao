@@ -1,6 +1,9 @@
 package br.com.compasso.votacao.service;
 
 import br.com.compasso.votacao.builders.SessaoBuilder;
+import br.com.compasso.votacao.builders.SessaoDtoBuilder;
+import br.com.compasso.votacao.controllers.dto.AssociadoDto;
+import br.com.compasso.votacao.controllers.dto.PautaDto;
 import br.com.compasso.votacao.controllers.dto.ResultadoDaVotacaoDto;
 import br.com.compasso.votacao.controllers.dto.SessaoDto;
 import br.com.compasso.votacao.controllers.form.SessaoForm;
@@ -96,29 +99,28 @@ class SessaoServiceTest {
     }
 
     @Test
-    public void listaUmaSessao() {
+    public void findByIdTestSucesso() {
         Optional<Sessao> optionalDeSessao = Optional.ofNullable(sessaoAbertaMock);
-        List<Sessao> Sessoes = Collections.singletonList(optionalDeSessao.get());
-        List<SessaoDto> sessaoDtosBruto = Arrays.asList(new SessaoDto());
         when(sessaoRepository.findById(eq(TEST_ID))).thenReturn(optionalDeSessao);
-        when(sessaoParaSessaoDto.converterList(eq(Sessoes))).thenReturn(sessaoDtosBruto);
+        Sessao sessao = sessaoService.findById(TEST_ID);
 
-        List<SessaoDto> sessaoDtos = sessaoService.listaAsSessoes();
-
-        assertEquals(sessaoDtos, sessaoDtosBruto);
-        verify(sessaoParaSessaoDto).converterList(eq(Sessoes));
+        assertEquals(sessao, sessaoAbertaMock);
+        verify(sessaoRepository).findById(eq(TEST_ID));
     }
 
     @Test
     public void salvarPeloFormSucesso() throws TempoInvalidoException, PautaInexistenteException {
         SessaoForm teste = new SessaoForm("60", TEST_TITULO);
+        SessaoDto sessaoDtoMock = generateSessaoDto();
 
         when(pautaRepository.findByTitulo(eq(TEST_TITULO))).thenReturn(Arrays.asList(pautaMock));
         when(sessaoFormParaSessao.converter(eq(teste), eq(pautaRepository))).thenReturn(sessaoAbertaMock);
         when(sessaoRepository.save(eq(sessaoAbertaMock))).thenReturn(sessaoAbertaMock);
+        when(sessaoParaSessaoDto.converter(eq(sessaoAbertaMock))).thenReturn(sessaoDtoMock);
 
-        Sessao sessao = sessaoService.salvaPeloForm(teste);
-        assertEquals(sessao, sessaoAbertaMock);
+
+        SessaoDto sessaoDto = sessaoService.salvaPeloForm(teste);
+        assertEquals(sessaoDto, sessaoDtoMock);
         verify(sessaoFormParaSessao).converter(eq(teste), eq(pautaRepository));
 
     }
@@ -209,6 +211,22 @@ class SessaoServiceTest {
 
     private static Pauta generatePauta() {
         return new Pauta(TEST_ID, TEST_TITULO, TEST_CONTEUDO);
+    }
+
+    public static AssociadoDto generateAssociadoDto(){
+        return new AssociadoDto(TEST_ID, "nome_test","cpf_test");
+    }
+
+    public static PautaDto generatePautaDto(){
+        return new PautaDto(TEST_ID, "test_titulo", "test_conteudo");
+    }
+
+    public static SessaoDto generateSessaoDto() throws TempoInvalidoException {
+        return new SessaoDtoBuilder()
+                .id(TEST_ID)
+                .paraA(generatePautaDto())
+                .voto(TEST_ID, OpcaoDeVoto.SIM, generateAssociadoDto())
+                .constroi();
     }
 
 }

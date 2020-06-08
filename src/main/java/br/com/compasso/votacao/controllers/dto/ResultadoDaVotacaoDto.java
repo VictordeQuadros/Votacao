@@ -1,6 +1,7 @@
 package br.com.compasso.votacao.controllers.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,39 +17,37 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
+@NoArgsConstructor
 public class ResultadoDaVotacaoDto {
 
-	private Long id = null;
-	private LocalDateTime dataDeInicio = null;
-	private LocalDateTime dataDeTermino = null;
-	private Set<VotoDto> listaDeVotos = null;
-	private EstadoDeSessao estado = null;
-	private PautaDto pauta = null;
-	private List<String> resultados = null;
-
-	public  ResultadoDaVotacaoDto(){}
+	private Long id;
+	private LocalDateTime dataDeInicio;
+	private LocalDateTime dataDeTermino;
+	private List<VotoDto> listaDeVotos;
+	private EstadoDeSessao estado;
+	private PautaDto pauta;
+	private List<String> resultados = new ArrayList<>();
 	
 
 	public ResultadoDaVotacaoDto(Sessao sessao) {
 		this.id = sessao.getId();
 		this.dataDeInicio = sessao.getDataDeInicio();
 		this.dataDeTermino = sessao.getDataDeTermino();
-		this.listaDeVotos = new HashSet<VotoDto>();
+		this.listaDeVotos = new ArrayList<>();
 		this.listaDeVotos.addAll(sessao.getListaDeVotos().stream().map(VotoDto::new).collect(Collectors.toList()));
 		this.setResultados();
 		this.estado = sessao.getEstado();
 		this.pauta = new PautaParaPautaDto().converter(sessao.getPauta());
 
 	}
-	public ResultadoDaVotacaoDto build(Sessao sessao) {
-		this.id = sessao.getId();
-		this.dataDeInicio = sessao.getDataDeInicio();
-		this.dataDeTermino = sessao.getDataDeTermino();
-		this.listaDeVotos = new HashSet<VotoDto>();
-		this.listaDeVotos.addAll(sessao.getListaDeVotos().stream().map(VotoDto::new).collect(Collectors.toList()));
+	public ResultadoDaVotacaoDto createBySessaoDto(SessaoDto sessaoDto) {
+		this.id = sessaoDto.getId();
+		this.dataDeInicio = sessaoDto.getDataDeInicio();
+		this.dataDeTermino = sessaoDto.getDataDeTermino();
+		this.listaDeVotos = sessaoDto.getListaDeVotos();
 		this.setResultados();
-		this.estado = sessao.getEstado();
-		this.pauta = new PautaParaPautaDto().converter(sessao.getPauta());
+		this.estado = sessaoDto.getEstado();
+		this.pauta = sessaoDto.getPauta();
 		return this;
 	}
 

@@ -6,13 +6,11 @@ import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import br.com.compasso.votacao.controllers.dto.PautaDto;
+import br.com.compasso.votacao.model.Pauta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.compasso.votacao.controllers.dto.AssociadoDto;
@@ -28,18 +26,24 @@ public class AssociadoController {
 
 	@Autowired
 	AssociadoRepository associadoRepository;
-	
-	@GetMapping
-	public List<AssociadoDto> lista(String cpf) {
 
-		if (cpf == null) {
-			List<Associado> associado = associadoRepository.findAll();
-			return new AssociadoParaAssociadoDto().converterList(associado);
-		} else {
-			List<Associado> associado = associadoRepository.findByCpf(cpf);
-			return new AssociadoParaAssociadoDto().converterList(associado);
-		}
+	@Autowired
+	AssociadoParaAssociadoDto associadoParaAssociadoDto;
+
+	@GetMapping
+	public ResponseEntity<List<AssociadoDto>> lista() {
+		List<Associado> associado = associadoRepository.findAll();
+		List<AssociadoDto> associadoDtos = associadoParaAssociadoDto.converterList(associado);
+		return ResponseEntity.ok(associadoDtos);
 	}
+
+	@GetMapping("/{cpf}")
+	public ResponseEntity<List<AssociadoDto>> buscaAssocidoDoCpf(@PathVariable String cpf) {
+		List<Associado> associado = associadoRepository.findByCpf(cpf);
+		List<AssociadoDto> associadoDtos = associadoParaAssociadoDto.converterList(associado);
+		return ResponseEntity.ok(associadoDtos);
+	}
+
 	
 	@PostMapping
 	@Transactional

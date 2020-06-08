@@ -6,13 +6,10 @@ import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import br.com.compasso.votacao.controllers.dto.SessaoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.compasso.votacao.controllers.dto.PautaDto;
@@ -28,24 +25,23 @@ public class PautasController {
 
 	@Autowired
 	private PautaRepository pautaRepository;
+	@Autowired
+	private PautaParaPautaDto pautaParaPautaDto;
 
 	@GetMapping
-	public ResponseEntity<List<PautaDto>> lista(String titulo) {
-
-		List<PautaDto> pautaDtos;
-		if (titulo == null) {
-			List<Pauta> pauta = pautaRepository.findAll();
-			pautaDtos = new PautaParaPautaDto().converterList(pauta);
-		} else {
-			List<Pauta> pauta = pautaRepository.findByTitulo(titulo);
-			pautaDtos = new PautaParaPautaDto().converterList(pauta);
-		}
-
-		if(pautaDtos.isEmpty()){
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<List<PautaDto>> lista() {
+		List<Pauta> pautas = pautaRepository.findAll();
+		List<PautaDto> pautaDtos = pautaParaPautaDto.converterList(pautas);
 		return ResponseEntity.ok(pautaDtos);
 	}
+
+	@GetMapping("/{titulo}")
+	public ResponseEntity<List<PautaDto>> buscaPautaDoTitulo(@PathVariable String titulo) {
+		List<Pauta> pauta = pautaRepository.findByTitulo(titulo);
+		List<PautaDto> pautaDto = pautaParaPautaDto.converterList(pauta);
+		return ResponseEntity.ok(pautaDto);
+	}
+
 
 	@PostMapping
 	@Transactional

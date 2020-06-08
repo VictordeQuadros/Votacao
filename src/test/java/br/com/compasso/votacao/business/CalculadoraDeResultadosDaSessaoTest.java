@@ -5,6 +5,7 @@ import br.com.compasso.votacao.model.OpcaoDeVoto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 class CalculadoraDeResultadosDaSessaoTest {
 
-    private static Set<VotoDto> setVotoDtoTest;
+    private static List<VotoDto> setVotoDtoTest;
     private static CalculadoraDeResultadosDaSessao calculadora;
 
 
@@ -48,26 +49,26 @@ class CalculadoraDeResultadosDaSessaoTest {
         assertTrue(resultados.get(3).contains("40,00%") && resultados.get(3).contains("60,00%"));
     }
 
-    private static Set<VotoDto> generateSetVotoDto(){
+    private static List<VotoDto> generateSetVotoDto(){
         VotoDto votoDto1 = new VotoDto();
         VotoDto votoDto2 = new VotoDto();
         VotoDto votoDto3 = new VotoDto();
         VotoDto votoDto4 = new VotoDto();
         VotoDto votoDto5 = new VotoDto();
-        Set<VotoDto> votoDtoSet = new HashSet<>();
+        List<VotoDto> votoDtoList = new ArrayList<>();
 
         votoDto1.setOpcaoDeVoto(OpcaoDeVoto.SIM);
         votoDto2.setOpcaoDeVoto(OpcaoDeVoto.SIM);
-        votoDtoSet.add(votoDto1);
-        votoDtoSet.add(votoDto2);
+        votoDtoList.add(votoDto1);
+        votoDtoList.add(votoDto2);
 
         votoDto3.setOpcaoDeVoto(OpcaoDeVoto.NAO);
         votoDto4.setOpcaoDeVoto(OpcaoDeVoto.NAO);
         votoDto5.setOpcaoDeVoto(OpcaoDeVoto.NAO);
-        votoDtoSet.add(votoDto3);
-        votoDtoSet.add(votoDto4);
-        votoDtoSet.add(votoDto5);
+        votoDtoList.add(votoDto3);
+        votoDtoList.add(votoDto4);
+        votoDtoList.add(votoDto5);
 
-        return votoDtoSet;
+        return votoDtoList;
     }
 }

@@ -49,12 +49,10 @@ public class SessaoController {
     public ResponseEntity<SessaoDto> cadastrar(@RequestBody @Valid SessaoForm form, UriComponentsBuilder uriBuilder)
             throws TempoInvalidoException, PautaInexistenteException {
 
-        Sessao sessao = sessaoService.salvaPeloForm(form);
-//		System.out.println(sessao);
-//		System.out.println(sessao.getPauta().getTitulo());
-        URI uri = uriBuilder.path("/sessao/{id}").buildAndExpand(sessao.getId()).toUri();
+        SessaoDto sessaoDto = sessaoService.salvaPeloForm(form);
+        URI uri = uriBuilder.path("/sessao/{id}").buildAndExpand(sessaoDto.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new SessaoDto(sessao));
+        return ResponseEntity.created(uri).body(sessaoDto);
     }
 
     @PutMapping("/{id}")
@@ -71,7 +69,7 @@ public class SessaoController {
     @GetMapping("/{id}")
     public ResponseEntity<ResultadoDaVotacaoDto> resultados(@PathVariable Long id) {
 
-        ResultadoDaVotacaoDto resultadoDaVotacaoDto = new ResultadoDaVotacaoDto(sessaoService.findById(id));
+        ResultadoDaVotacaoDto resultadoDaVotacaoDto = sessaoService.resultados(id);
 
         return ResponseEntity.ok(resultadoDaVotacaoDto);
 

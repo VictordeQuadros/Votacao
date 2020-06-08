@@ -1,7 +1,9 @@
 package br.com.compasso.votacao.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -31,7 +33,7 @@ public class Sessao {
 	private LocalDateTime dataDeTermino;
 
 	@OneToMany(fetch = FetchType.EAGER)
-	private  Set<Voto> listaDeVotos = new HashSet<Voto>();
+	private List<Voto> listaDeVotos = new ArrayList<>();
 
 	private EstadoDeSessao estado = EstadoDeSessao.ABERTA;
 
